@@ -1,21 +1,27 @@
 import { Router, Request, Response } from 'express';
 import spotifyApi, { scopes } from '../config/spotify';
+import { storeState, verifyAndRemoveState } from '../config/stateStore';
 
 const router = Router();
 
 router.get('/login', (req: Request, res: Response) => {
   const state = Math.random().toString(36).substring(7);
+  storeState(state);
   const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
   res.redirect(authorizeURL);
 });
 
-// Handle both /auth/callback and /spotify/callback
 router.get('/callback', async (req: Request, res: Response) => {
   const { code, state } = req.query;
   const error = req.query.error;
 
   if (error) {
     res.redirect('/error?message=invalid_token');
+    return;
+  }
+
+  if (!state || typeof state !== 'string' || !verifyAndRemoveState(state)) {
+    res.redirect('/error?message=invalid_state');
     return;
   }
 
