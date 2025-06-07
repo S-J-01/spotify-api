@@ -78,9 +78,4 @@ router.post(
   }
 );
 
-// Redirect /spotify/callback to /auth/callback
-router.get('/callback', (req: Request, res: Response) => {
-  res.redirect(`/auth/callback?${req.url.split('?')[1]}`);
-});
-
 export default router;
