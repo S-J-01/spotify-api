@@ -7,7 +7,10 @@ import {
 
 export const getTopTracks = async () => {
   try {
-    const response = await spotifyApi.getMyTopTracks({ limit: 10 });
+    const response = await spotifyApi.getMyTopTracks({
+      limit: 10,
+      time_range: 'short_term',
+    });
     return response.body.items;
   } catch (error) {
     console.log('Error getting top tracks:', error);
