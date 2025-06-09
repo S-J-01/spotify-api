@@ -29,12 +29,9 @@ router.get('/callback', async (req: Request, res: Response) => {
     const data = await spotifyApi.authorizationCodeGrant(code as string);
     const { access_token, refresh_token } = data.body;
 
-    spotifyApi.setAccessToken(access_token);
     spotifyApi.setRefreshToken(refresh_token);
 
-    res.redirect(
-      `/user?access_token=${access_token}&refresh_token=${refresh_token}`
-    );
+    res.redirect(`/user?access_token=${access_token}`);
   } catch (error) {
     res.redirect('/error?message=invalid_token');
   }
